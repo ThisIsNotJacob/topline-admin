@@ -2,7 +2,7 @@
   <div class="login-wrap">
     <div class="form-wrap">
       <div class="form-head">
-        <img src="./logo_index.png" alt='黑马头条'>
+        <img src="./logo_index.png" alt="黑马头条">
       </div>
       <div class="login-form">
         <el-form ref="form" :model="form">
@@ -14,7 +14,7 @@
               <el-input v-model="form.code" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="9" :offset="1">
-              <el-button>获取验证码</el-button>
+              <el-button @click="handleGetcode">获取验证码</el-button>
             </el-col>
           </el-form-item>
           <el-form-item>
@@ -27,19 +27,29 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: "AppLogin",
+  name: 'AppLogin',
   data() {
     return {
       form: {
-        mobile: "",
-        code: ""
+        mobile: '',
+        code: ''
       }
     }
   },
   methods: {
     onSubmit() {
-        console.log('submit!')
+      console.log('submit!')
+    },
+    handleGetcode() {
+      const { mobile } = this.form
+      axios({
+        method: 'GET',
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+      }).then(res => {
+        console.log(res.data)
+      })
     }
   }
 }
