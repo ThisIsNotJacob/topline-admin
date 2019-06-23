@@ -34,9 +34,10 @@ export default {
   data() {
     return {
       form: {
-        mobile: '',
+        mobile: '17660471520',
         code: ''
-      }
+      },
+      captchaObj: null
     }
   },
   methods: {
@@ -45,11 +46,36 @@ export default {
     },
     handleGetcode() {
       const { mobile } = this.form
+      if (this.captchaObj) {
+        return this.captchaObj.verify()
+      }
       axios({
         method: 'GET',
         url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
       }).then(res => {
-        console.log(res.data)
+        const { data } = res.data
+        window.initGeetest(
+          {
+            gt: data.gt,
+            challenge: data.challenge,
+            offline: !data.success,
+            new_captcha: data.new_captcha,
+            product: 'bind'
+          },
+          captchaObj => {
+            this.captchaObj = captchaObj
+            captchaObj
+              .onReady(function() {
+                captchaObj.verify()
+              })
+              .onSuccess(function() {
+                console.log('验证成功了！')
+              })
+              .onError(function() {
+
+              })
+          }
+        )
       })
     }
   }
