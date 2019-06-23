@@ -69,10 +69,22 @@ export default {
                 captchaObj.verify()
               })
               .onSuccess(function() {
-                console.log('验证成功了！')
-              })
-              .onError(function() {
-
+                const {
+                  geetest_challenge: challenge,
+                  geetest_seccode: seccode,
+                  geetest_validate: validate
+                } = captchaObj.getValidate()
+                axios({
+                  method: 'GET',
+                  url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+                  params: {
+                    challenge,
+                    seccode,
+                    validate
+                  }
+                }).then(res => {
+                  console.log(res.data)
+                })
               })
           }
         )
