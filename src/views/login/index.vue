@@ -5,11 +5,11 @@
         <img src="./logo_index.png" alt="黑马头条">
       </div>
       <div class="login-form">
-        <el-form ref="form" :model="form">
-          <el-form-item>
+        <el-form ref='form' :model='form' :rules='rules'>
+          <el-form-item prop="mobile">
             <el-input v-model="form.mobile" placeholder="手机号"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="code">
             <el-col :span="14">
               <el-input v-model="form.code" placeholder="验证码"></el-input>
             </el-col>
@@ -37,11 +37,29 @@ export default {
         mobile: '17660471520',
         code: ''
       },
+      rules: {
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { len: 11, message: '长度必须为11个字符', trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' },
+          { len: 6, message: '长度必须为6个字符', trigger: 'blur' }
+        ]
+      },
       captchaObj: null
     }
   },
   methods: {
     handleLogin() {
+      this.$refs['ruleForm'].validate(valid => {
+        if (!valid) {
+          return
+        }
+        this.submitLogin()
+      })
+    },
+    submitLogin() {
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
