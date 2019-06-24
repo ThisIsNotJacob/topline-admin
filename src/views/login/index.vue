@@ -14,7 +14,9 @@
               <el-input v-model="form.code" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="9" :offset="1">
-              <el-button @click="handleGetcode">获取验证码</el-button>
+              <el-button @click="handleGetcode">
+                {{ codeTimer ? `剩余 ${codeSeconds} 秒` : '获取验证码' }}
+              </el-button>
             </el-col>
           </el-form-item>
           <el-form-item prop="agree">
@@ -33,6 +35,7 @@
 <script>
 import axios from 'axios'
 import '@/vendor/gt'
+const initCodeSeconds = 60
 export default {
   name: 'AppLogin',
   data() {
@@ -57,7 +60,9 @@ export default {
         ]
       },
       captchaObj: null,
-      hasLoading: false
+      hasLoading: false,
+      codeTimer: null,
+      codeSeconds: initCodeSeconds
     }
   },
   methods: {
@@ -92,7 +97,7 @@ export default {
       })
     },
     handleGetcode() {
-      this.$refs['ruleForm'].validateField('moblie', errorMessage => {
+      this.$refs['ruleForm'].validateField('mobile', errorMessage => {
         if (errorMessage.trim().length > 0) {
           return
         }
@@ -120,10 +125,10 @@ export default {
           captchaObj => {
             this.captchaObj = captchaObj
             captchaObj
-              .onReady(function() {
+              .onReady(() => {
                 captchaObj.verify()
               })
-              .onSuccess(function() {
+              .onSuccess(() => {
                 const {
                   geetest_challenge: challenge,
                   geetest_seccode: seccode,
@@ -138,12 +143,22 @@ export default {
                     validate
                   }
                 }).then(res => {
-                  console.log(res.data)
+                  this.codeCountDown()
                 })
               })
           }
         )
       })
+    },
+    codeCountDown() {
+      this.codeTimer = window.setInterval(() => {
+        this.codeSeconds--
+        if (this.codeSeconds <= 0) {
+          this.codeSeconds = initCodeSeconds
+          window.clearInterval(this.codeTimer)
+          this.codeTimer = null
+        }
+      }, 1000)
     }
   }
 }
