@@ -92,6 +92,14 @@ export default {
       })
     },
     handleGetcode() {
+      this.$refs['ruleForm'].validateField('moblie', errorMessage => {
+        if (errorMessage.trim().length > 0) {
+          return
+        }
+        this.showGeetest()
+      })
+    },
+    showGeetest() {
       const { mobile } = this.form
       if (this.captchaObj) {
         return this.captchaObj.verify()
