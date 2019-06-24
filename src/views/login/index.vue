@@ -18,7 +18,7 @@
             </el-col>
           </el-form-item>
           <el-form-item>
-            <el-button class="btn-login" type="primary" @click="handleLogin">登录</el-button>
+            <el-button class="btn-login" type="primary" @click="handleLogin" :loading="hasLoading">登录</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -47,7 +47,8 @@ export default {
           { len: 6, message: '长度必须为6个字符', trigger: 'blur' }
         ]
       },
-      captchaObj: null
+      captchaObj: null,
+      hasLoading: false
     }
   },
   methods: {
@@ -60,6 +61,7 @@ export default {
       })
     },
     submitLogin() {
+      this.hasLoading = true
       axios({
         method: 'POST',
         url: 'http://ttapi.research.itcast.cn/mp/v1_0/authorizations',
@@ -69,6 +71,7 @@ export default {
           message: '登陆成功',
           type: 'success'
         })
+        this.hasLoading = false
         this.$router.push({
           name: 'home'
         })
@@ -76,6 +79,7 @@ export default {
         if (err.response.status === 400) {
           this.$message.error('登录失败，手机号或验证码错误')
         }
+        this.hasLoading = false
       })
     },
     handleGetcode() {
