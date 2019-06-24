@@ -5,7 +5,7 @@
         <img src="./logo_index.png" alt="黑马头条">
       </div>
       <div class="login-form">
-        <el-form ref='form' :model='form' :rules='rules'>
+        <el-form ref='ruleForm' :model='form' :rules='rules'>
           <el-form-item prop="mobile">
             <el-input v-model="form.mobile" placeholder="手机号"></el-input>
           </el-form-item>
@@ -16,6 +16,10 @@
             <el-col :span="9" :offset="1">
               <el-button @click="handleGetcode">获取验证码</el-button>
             </el-col>
+          </el-form-item>
+          <el-form-item prop="agree">
+            <el-checkbox v-model="form.agree"></el-checkbox>
+            <span>我已阅读并同意<a href="#">用户协议</a>和<a href="#">隐私条款</a></span>
           </el-form-item>
           <el-form-item>
             <el-button class="btn-login" type="primary" @click="handleLogin" :loading="hasLoading">登录</el-button>
@@ -35,7 +39,8 @@ export default {
     return {
       form: {
         mobile: '17660471520',
-        code: ''
+        code: '',
+        agree: ''
       },
       rules: {
         mobile: [
@@ -45,6 +50,10 @@ export default {
         code: [
           { required: true, message: '请输入验证码', trigger: 'blur' },
           { len: 6, message: '长度必须为6个字符', trigger: 'blur' }
+        ],
+        agree: [
+          { required: true, message: '请同意用户协议', trigger: 'change' },
+          { pattern: /true/, message: '请同意用户协议', trigger: 'change' }
         ]
       },
       captchaObj: null,
@@ -156,5 +165,12 @@ export default {
       width: 100%;
     }
   }
+}
+a {
+  text-decoration: none;
+  color: skyblue
+}
+.el-checkbox {
+  margin-right: 5px;
 }
 </style>
