@@ -14,7 +14,7 @@
               <el-input v-model="form.code" placeholder="验证码"></el-input>
             </el-col>
             <el-col :span="9" :offset="1">
-              <el-button @click="handleGetcode">
+              <el-button @click="handleGetcode" :disabled="!!codeTimer || codeLoading">
                 {{ codeTimer ? `剩余 ${codeSeconds} 秒` : '获取验证码' }}
               </el-button>
             </el-col>
@@ -62,7 +62,9 @@ export default {
       captchaObj: null,
       hasLoading: false,
       codeTimer: null,
-      codeSeconds: initCodeSeconds
+      codeSeconds: initCodeSeconds,
+      sendMobile: '',
+      codeLoading: false
     }
   },
   methods: {
@@ -101,17 +103,23 @@ export default {
         if (errorMessage.trim().length > 0) {
           return
         }
-        this.showGeetest()
+        if (this.captchaObj) {
+          if (this.form.mobile !== this.sendMobile) {
+            document.removeChild(document.querySelector('.geetest_panel'))
+            this.showGeetest()
+          } else {
+            this.captchaObj.verify()
+          }
+        } else {
+          this.showGeetest()
+        }
       })
     },
     showGeetest() {
-      const { mobile } = this.form
-      if (this.captchaObj) {
-        return this.captchaObj.verify()
-      }
+      this.codeLoading = true
       axios({
         method: 'GET',
-        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${mobile}`
+        url: `http://ttapi.research.itcast.cn/mp/v1_0/captchas/${this.form.mobile}`
       }).then(res => {
         const { data } = res.data
         window.initGeetest(
@@ -126,7 +134,9 @@ export default {
             this.captchaObj = captchaObj
             captchaObj
               .onReady(() => {
+                this.sendMobile = this.form.mobile
                 captchaObj.verify()
+                this.codeLoading = false
               })
               .onSuccess(() => {
                 const {
@@ -136,7 +146,7 @@ export default {
                 } = captchaObj.getValidate()
                 axios({
                   method: 'GET',
-                  url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${mobile}`,
+                  url: `http://ttapi.research.itcast.cn/mp/v1_0/sms/codes/${this.form.mobile}`,
                   params: {
                     challenge,
                     seccode,
