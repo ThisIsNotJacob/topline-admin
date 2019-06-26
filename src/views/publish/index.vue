@@ -1,14 +1,14 @@
 <template>
   <div>
-      <p>Publish Component</p>
+    <p>Publish Component</p>
   </div>
 </template>
 
 <script>
 export default {
-  name:'AppPublish',
+  name: 'AppPublish',
   data() {
-      return {}
+    return {}
   }
 }
 </script>
