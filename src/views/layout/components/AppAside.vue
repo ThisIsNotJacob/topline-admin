@@ -19,7 +19,7 @@
       </template>
       <el-menu-item-group>
         <el-menu-item index="/publish">发布文章</el-menu-item>
-        <el-menu-item index="2-2">内容列表</el-menu-item>
+        <el-menu-item index="/article">内容列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
     <el-submenu index="3">
