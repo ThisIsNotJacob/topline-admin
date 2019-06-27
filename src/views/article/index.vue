@@ -35,33 +35,42 @@
 
     <el-card class="list-card">
       <div slot="header" class="clearfix">
-        <span>共找到15条符合条件的内容</span>
+        <span>共找到<span>{{totalcount}}</span>条符合条件的内容</span>
         <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <el-table
-        :data="tableData"
+        :data="articles"
         style="width: 100%"
         class="list-table"
         >
         <el-table-column
-          prop="date"
-          label="日期"
+          prop="cover.images[0]"
+          label="封面"
+          width="60">
+          <template slot-scope="scope">
+            <img :src="scope.row.cover.images[0]" width="30">
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="标题"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
+          prop="pubdate"
+          label="发布日期"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          prop="status"
+          label="状态">
         </el-table-column>
       </el-table>
       <el-pagination
         background
         layout="prev, pager, next"
-        :total="1000">
+        @current-change="handleGetpage"
+        :total="totalcount">
       </el-pagination>
     </el-card>
   </div>
@@ -72,42 +81,37 @@ export default {
   name: 'Articlelist',
   data() {
     return {
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }],
+      articles: [],
       form: {
         region: '',
         resource: '',
         value1: ''
-      }
+      },
+      totalcount: 0
     }
   },
   created() {
-    this.$http({
-      methods: 'GET',
-      url: '/articles',
-      headers: {}
-    }).then(data => {
-      console.log(data)
-    })
+    this.loadarticles()
   },
   methods: {
+    loadarticles(page = 1) {
+      this.$http({
+        method: 'GET',
+        url: '/articles',
+        params: {
+          page,
+          per_page: 10
+        }
+      }).then(data => {
+        this.articles = data.results
+        this.totalcount = data.total_count
+      })
+    },
     onSubmit() {
       console.log('submit!')
+    },
+    handleGetpage(page) {
+      this.loadarticles(page)
     }
   }
 }
