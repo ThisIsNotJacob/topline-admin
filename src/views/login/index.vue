@@ -81,8 +81,8 @@ export default {
         method: 'POST',
         url: '/authorizations',
         data: this.form
-      }).then(res => {
-        window.localStorage.setItem('user_info', JSON.stringify(res.data.data))
+      }).then(data => {
+        window.localStorage.setItem('user_info', JSON.stringify(data))
         this.$message({
           message: '登陆成功',
           type: 'success'
@@ -120,8 +120,7 @@ export default {
       this.$http({
         method: 'GET',
         url: `/captchas/${this.form.mobile}`
-      }).then(res => {
-        const { data } = res.data
+      }).then(data => {
         window.initGeetest(
           {
             gt: data.gt,
@@ -152,7 +151,7 @@ export default {
                     seccode,
                     validate
                   }
-                }).then(res => {
+                }).then(data => {
                   this.codeCountDown()
                 })
               })

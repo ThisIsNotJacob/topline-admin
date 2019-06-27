@@ -16,8 +16,9 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error)
 }
 axios.interceptors.response.use(response => {
-  return response
+  return response.data.data
 }, error => {
+  console.log(error)
   return Promise.reject(error)
 })
 Vue.use(ElementUI)

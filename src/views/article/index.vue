@@ -100,9 +100,9 @@ export default {
     this.$http({
       methods: 'GET',
       url: '/articles',
-      header: {}
-    }).then(res => {
-      console.log(res)
+      headers: {}
+    }).then(data => {
+      console.log(data)
     })
   },
   methods: {
