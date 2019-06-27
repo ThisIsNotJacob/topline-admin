@@ -96,6 +96,15 @@ export default {
       }
     }
   },
+  created() {
+    this.$http({
+      methods: 'GET',
+      url: '/articles',
+      header: {}
+    }).then(res => {
+      console.log(res)
+    })
+  },
   methods: {
     onSubmit() {
       console.log('submit!')

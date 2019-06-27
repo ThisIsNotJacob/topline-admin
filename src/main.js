@@ -8,7 +8,18 @@ import 'nprogress/nprogress.css'
 import axios from 'axios'
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
-
+axios.interceptors.request.use(config => {
+  const userinfo = JSON.parse(window.localStorage.getItem('user_info'))
+  config.headers.Authorization = `Bearer ${userinfo.token}`
+  return config
+}), error => {
+  return Promise.reject(error)
+}
+axios.interceptors.response.use(response => {
+  return response
+}, error => {
+  return Promise.reject(error)
+})
 Vue.use(ElementUI)
 Vue.config.productionTip = false
 
