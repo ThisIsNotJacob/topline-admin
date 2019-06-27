@@ -6,8 +6,14 @@ import 'element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
+import JSONbig from 'json-bigint'
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
+axios.defaults.transformResponse = [function(data) {
+  // data 是未经处理的后端响应数据：JSON 格式字符串
+  // Do whatever you want to transform the data
+  return JSONbig.parse(data)
+}]
 axios.interceptors.request.use(config => {
   const userinfo = JSON.parse(window.localStorage.getItem('user_info'))
   if (userinfo) {

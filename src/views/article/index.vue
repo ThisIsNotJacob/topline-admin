@@ -3,7 +3,6 @@
     <el-card class="filter-card">
       <div slot="header" class="clearfix">
         <span>筛选条件</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <el-form ref="form" :model="form" label-width="80px">
         <el-form-item label="特殊资源">
@@ -36,7 +35,6 @@
     <el-card class="list-card">
       <div slot="header" class="clearfix">
         <span>共找到<span>{{totalcount}}</span>条符合条件的内容</span>
-        <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
       </div>
       <el-table
         :data="articles"
@@ -65,6 +63,13 @@
         <el-table-column
           prop="status"
           label="状态">
+        </el-table-column>
+        <el-table-column
+          label="状态">
+          <template slot-scope="scope">
+            <el-button type="success" plain>修改</el-button>
+            <el-button type="danger" plain @click="handleDelete(scope.row)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <el-pagination
@@ -117,6 +122,14 @@ export default {
     },
     handleGetpage(page) {
       this.loadarticles(page)
+    },
+    handleDelete(item) {
+      this.$http({
+        method: 'DELETE',
+        url: `/articles/${item.id}`
+      }).then(data => {
+        console.log(data)
+      })
     }
   }
 }
