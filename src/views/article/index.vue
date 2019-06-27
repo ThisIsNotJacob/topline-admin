@@ -42,6 +42,7 @@
         :data="articles"
         style="width: 100%"
         class="list-table"
+        v-loading="articleloading"
         >
         <el-table-column
           prop="cover.images[0]"
@@ -70,6 +71,7 @@
         background
         layout="prev, pager, next"
         @current-change="handleGetpage"
+        :disabled="articleloading"
         :total="totalcount">
       </el-pagination>
     </el-card>
@@ -87,7 +89,8 @@ export default {
         resource: '',
         value1: ''
       },
-      totalcount: 0
+      totalcount: 0,
+      articleloading: false
     }
   },
   created() {
@@ -95,6 +98,7 @@ export default {
   },
   methods: {
     loadarticles(page = 1) {
+      this.articleloading = true
       this.$http({
         method: 'GET',
         url: '/articles',
@@ -103,6 +107,7 @@ export default {
           per_page: 10
         }
       }).then(data => {
+        this.articleloading = false
         this.articles = data.results
         this.totalcount = data.total_count
       })
