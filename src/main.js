@@ -10,15 +10,23 @@ Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 axios.interceptors.request.use(config => {
   const userinfo = JSON.parse(window.localStorage.getItem('user_info'))
-  config.headers.Authorization = `Bearer ${userinfo.token}`
+  if (userinfo) {
+    config.headers.Authorization = `Bearer ${userinfo.token}`
+  }
   return config
-}), error => {
+}, error => {
   return Promise.reject(error)
-}
+})
 axios.interceptors.response.use(response => {
   return response.data.data
 }, error => {
-  console.log(error)
+  const status = error.response.status
+  if (status === 401) {
+    window.localStorage.removeItem('user_info')
+    router.push({
+      name: 'login'
+    })
+  }
   return Promise.reject(error)
 })
 Vue.use(ElementUI)
