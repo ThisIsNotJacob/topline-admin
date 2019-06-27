@@ -41,7 +41,7 @@ export default {
     return {
       form: {
         mobile: '17660471520',
-        code: '',
+        code: '246810',
         agree: ''
       },
       rules: {
