@@ -5,19 +5,27 @@
         <span>筛选条件</span>
       </div>
       <el-form ref="form" :model="form" label-width="80px">
-        <el-form-item label="特殊资源">
+        <el-form-item label="状态">
           <el-radio-group v-model="form.resource">
-            <el-radio label="线上品牌商赞助"></el-radio>
-            <el-radio label="线下场地免费"></el-radio>
+            <el-radio
+            v-for="item in statuslist"
+            :label="item.label"
+            :key="item.label"
+            >
+            </el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="活动区域">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+        <el-form-item label="频道">
+          <el-select v-model="form.region" placeholder="请选择频道">
+            <el-option
+            v-for="item in channels"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+            ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="活动形式">
+        <el-form-item label="时间">
           <el-date-picker
             v-model="form.value1"
             type="daterange"
@@ -63,7 +71,7 @@
         <el-table-column
           label="状态">
           <template slot-scope="scope">
-            <el-tag :type="statuslist[scope.row.status].type">{{statuslist[scope.row.status].lable}}</el-tag>
+            <el-tag :type="statuslist[scope.row.status].type">{{statuslist[scope.row.status].label}}</el-tag>
           </template>
         </el-table-column>
         <el-table-column
@@ -99,25 +107,26 @@ export default {
       statuslist: [
         {
           type: 'info',
-          lable: '草稿'
+          label: '草稿'
         },
         {
           type: '',
-          lable: '待审核'
+          label: '待审核'
         },
         {
           type: 'success',
-          lable: '审核通过'
+          label: '审核通过'
         },
         {
           type: 'warning',
-          lable: '审核失败'
+          label: '审核失败'
         },
         {
           type: 'danger',
-          lable: '已删除'
+          label: '已删除'
         }
       ],
+      channels: [],
       totalcount: 0,
       articleloading: false,
       page: 1
@@ -125,6 +134,7 @@ export default {
   },
   created() {
     this.loadarticles()
+    this.handleGetChannels()
   },
   methods: {
     loadarticles(page = 1) {
@@ -171,6 +181,14 @@ export default {
           type: 'info',
           message: '已取消删除'
         })
+      })
+    },
+    handleGetChannels() {
+      this.$http({
+        method: 'GET',
+        url: '/channels'
+      }).then(data => {
+        this.channels = data.channels
       })
     }
   }
