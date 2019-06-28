@@ -4,19 +4,20 @@
       <div slot="header" class="clearfix">
         <span>筛选条件</span>
       </div>
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form label-width="80px">
         <el-form-item label="状态">
-          <el-radio-group v-model="form.resource">
+          <el-radio-group v-model="filterparams.status">
+            <el-radio label="">全部</el-radio>
             <el-radio
-            v-for="item in statuslist"
-            :label="item.label"
+            v-for="(item, index) in statuslist"
+            :label="index+''"
             :key="item.label"
-            >
+            >{{item.label}}
             </el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道">
-          <el-select v-model="form.region" placeholder="请选择频道">
+          <el-select v-model="filterparams.channel_id" placeholder="请选择频道">
             <el-option
             v-for="item in channels"
             :key="item.id"
@@ -27,7 +28,9 @@
         </el-form-item>
         <el-form-item label="时间">
           <el-date-picker
-            v-model="form.value1"
+            value-format="yyyy-MM-dd"
+            v-model="begin_end_pubdate"
+            @change="handleDateChange"
             type="daterange"
             range-separator="至"
             start-placeholder="开始日期"
@@ -35,7 +38,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="onSubmit">查询</el-button>
+          <el-button type="primary" @click="onSubmit" :loading="articleloading">查询</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -99,11 +102,6 @@ export default {
   data() {
     return {
       articles: [],
-      form: {
-        region: '',
-        resource: '',
-        value1: ''
-      },
       statuslist: [
         {
           type: 'info',
@@ -127,6 +125,13 @@ export default {
         }
       ],
       channels: [],
+      filterparams: {
+        status: '',
+        channel_id: '',
+        begin_pubdate: '',
+        end_pubdate: ''
+      },
+      begin_end_pubdate: [],
       totalcount: 0,
       articleloading: false,
       page: 1
@@ -139,12 +144,19 @@ export default {
   methods: {
     loadarticles(page = 1) {
       this.articleloading = true
+      const filterdata = {}
+      for (let key in this.filterparams) {
+        if (this.filterparams[key]) {
+          filterdata[key] = this.filterparams[key]
+        }
+      }
       this.$http({
         method: 'GET',
         url: '/articles',
         params: {
           page,
-          per_page: 10
+          per_page: 10,
+          ...filterdata
         }
       }).then(data => {
         this.articleloading = false
@@ -153,7 +165,7 @@ export default {
       })
     },
     onSubmit() {
-      console.log('submit!')
+      this.loadarticles()
     },
     handleGetpage(page) {
       this.page = page
@@ -190,6 +202,10 @@ export default {
       }).then(data => {
         this.channels = data.channels
       })
+    },
+    handleDateChange(value) {
+      this.filterparams.begin_pubdate = value[0]
+      this.filterparams.end_pubdate = value[1]
     }
   }
 }
