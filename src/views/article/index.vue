@@ -126,12 +126,27 @@ export default {
       this.loadarticles(page)
     },
     handleDelete(item) {
-      this.$http({
-        method: 'DELETE',
-        url: `/articles/${item.id}`
-      }).then(data => {
-        // console.log(data)
-        this.loadarticles(this.page)
+      this.$confirm('确认删除吗？', '删除提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http({
+          method: 'DELETE',
+          url: `/articles/${item.id}`
+        }).then(data => {
+          // console.log(data)
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          this.loadarticles(this.page)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
       })
     }
   }

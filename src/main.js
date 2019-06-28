@@ -28,7 +28,7 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 axios.interceptors.response.use(response => {
-  if (typeof response.data === 'object') {
+  if (typeof response.data === 'object' && response.data.data) {
     return response.data.data
   } else {
     return response.data
