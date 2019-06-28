@@ -4,7 +4,7 @@
       <div slot="header" class="clearfix">
         <span>筛选条件</span>
       </div>
-      <el-form label-width="80px">
+      <el-form ref="form" :model="filterparams" label-width="80px">
         <el-form-item label="状态">
           <el-radio-group v-model="filterparams.status">
             <el-radio label="">全部</el-radio>
@@ -165,6 +165,7 @@ export default {
       })
     },
     onSubmit() {
+      this.page = 1
       this.loadarticles()
     },
     handleGetpage(page) {
