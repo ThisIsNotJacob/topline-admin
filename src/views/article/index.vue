@@ -61,11 +61,13 @@
           width="180">
         </el-table-column>
         <el-table-column
-          prop="status"
           label="状态">
+          <template slot-scope="scope">
+            <el-tag :type="statuslist[scope.row.status].type">{{statuslist[scope.row.status].lable}}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column
-          label="状态">
+          label="操作">
           <template slot-scope="scope">
             <el-button type="success" plain>修改</el-button>
             <el-button type="danger" plain @click="handleDelete(scope.row)">删除</el-button>
@@ -94,6 +96,28 @@ export default {
         resource: '',
         value1: ''
       },
+      statuslist: [
+        {
+          type: 'info',
+          lable: '草稿'
+        },
+        {
+          type: '',
+          lable: '待审核'
+        },
+        {
+          type: 'success',
+          lable: '审核通过'
+        },
+        {
+          type: 'warning',
+          lable: '审核失败'
+        },
+        {
+          type: 'danger',
+          lable: '已删除'
+        }
+      ],
       totalcount: 0,
       articleloading: false,
       page: 1
