@@ -12,7 +12,11 @@ axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 axios.defaults.transformResponse = [function(data) {
   // data 是未经处理的后端响应数据：JSON 格式字符串
   // Do whatever you want to transform the data
-  return JSONbig.parse(data)
+  try {
+    return JSONbig.parse(data)
+  } catch (err) {
+    return data
+  }
 }]
 axios.interceptors.request.use(config => {
   const userinfo = JSON.parse(window.localStorage.getItem('user_info'))
@@ -24,7 +28,11 @@ axios.interceptors.request.use(config => {
   return Promise.reject(error)
 })
 axios.interceptors.response.use(response => {
-  return response.data.data
+  if (typeof response.data === 'object') {
+    return response.data.data
+  } else {
+    return response.data
+  }
 }, error => {
   const status = error.response.status
   if (status === 401) {

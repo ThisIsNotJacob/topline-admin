@@ -95,7 +95,8 @@ export default {
         value1: ''
       },
       totalcount: 0,
-      articleloading: false
+      articleloading: false,
+      page: 1
     }
   },
   created() {
@@ -121,6 +122,7 @@ export default {
       console.log('submit!')
     },
     handleGetpage(page) {
+      this.page = page
       this.loadarticles(page)
     },
     handleDelete(item) {
@@ -128,7 +130,8 @@ export default {
         method: 'DELETE',
         url: `/articles/${item.id}`
       }).then(data => {
-        console.log(data)
+        // console.log(data)
+        this.loadarticles(this.page)
       })
     }
   }
