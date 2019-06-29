@@ -3,8 +3,8 @@
     <div slot="header" class="header">
       <span>发布文章</span>
       <div>
-        <el-button type="success">发布</el-button>
-        <el-button type="primary">存入草稿</el-button>
+        <el-button type="success" @click="handlepublish(false)">发布</el-button>
+        <el-button type="primary" @click="handlepublish(true)">存入草稿</el-button>
       </div>
     </div>
     <el-form>
@@ -39,6 +39,26 @@ export default {
         },
         channel_id: 3
       }
+    }
+  },
+  methods: {
+    handlepublish(draft) {
+      this.$http({
+        method: 'POST',
+        url: '/articles',
+        data: this.articleForm,
+        params: {
+          draft
+        }
+      }).then(data => {
+        this.$message({
+          type: 'success',
+          message: '发布成功'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('发布失败')
+      })
     }
   }
 }
