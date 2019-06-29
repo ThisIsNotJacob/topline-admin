@@ -73,7 +73,7 @@
         <el-table-column
           label="操作">
           <template slot-scope="scope">
-            <el-button type="success" plain>修改</el-button>
+            <el-button type="success" plain @click="$router.push(`/publish/${scope.row.id}`)">修改</el-button>
             <el-button type="danger" plain @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -177,7 +177,6 @@ export default {
           method: 'DELETE',
           url: `/articles/${item.id}`
         }).then(data => {
-          // console.log(data)
           this.$message({
             type: 'success',
             message: '删除成功!'
