@@ -26,7 +26,19 @@
           </el-form-item>
         </el-form>
       </el-col>
-      <el-col :offset="2" :span="4"></el-col>
+      <el-col :offset="2" :span="4">
+        <el-upload
+          class="avatar-uploader"
+          :headers="{ Authorization: token}"
+          action="http://ttapi.research.itcast.cn/mp/v1_0/user/photo"
+          :show-file-list="false"
+          name="photo"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="userInfo.photo" :src="userInfo.photo" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-col>
     </el-row>
   </el-card>
 
@@ -37,7 +49,8 @@ export default {
   name: 'AccountSetting',
   data() {
     return {
-      userInfo: {}
+      userInfo: {},
+      token: `Bearer ${JSON.parse(window.localStorage.getItem('user_info')).token}`
     }
   },
   created() {
@@ -77,11 +90,35 @@ export default {
         console.log(err)
         this.$message.error('更新用户信息失败')
       })
-    }
+    },
+    handleAvatarSuccess() {},
+    beforeAvatarUpload() {}
   }
 }
 </script>
 
 <style lang='less' scoped>
-
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>
