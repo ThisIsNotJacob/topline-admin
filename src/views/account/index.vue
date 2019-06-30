@@ -29,12 +29,9 @@
       <el-col :offset="2" :span="4">
         <el-upload
           class="avatar-uploader"
-          :headers="{ Authorization: token}"
           action="http://ttapi.research.itcast.cn/mp/v1_0/user/photo"
           :show-file-list="false"
-          name="photo"
-          :on-success="handleAvatarSuccess"
-          :before-upload="beforeAvatarUpload">
+          :http-request="handleSend">
           <img v-if="userInfo.photo" :src="userInfo.photo" class="avatar">
           <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
@@ -49,8 +46,7 @@ export default {
   name: 'AccountSetting',
   data() {
     return {
-      userInfo: {},
-      token: `Bearer ${JSON.parse(window.localStorage.getItem('user_info')).token}`
+      userInfo: {}
     }
   },
   created() {
@@ -92,7 +88,25 @@ export default {
       })
     },
     handleAvatarSuccess() {},
-    beforeAvatarUpload() {}
+    beforeAvatarUpload() {},
+    handleSend(uploadConfig) {
+      const formData = new FormData()
+      formData.append('photo', uploadConfig.file)
+      this.$http({
+        method: 'PATCH',
+        url: '/user/photo',
+        data: formData
+      }).then(data => {
+        this.userInfo.photo = data.photo
+        this.$message({
+          type: 'success',
+          message: '上传成功'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('上传失败')
+      })
+    }
   }
 }
 </script>
