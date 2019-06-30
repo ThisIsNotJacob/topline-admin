@@ -38,6 +38,11 @@ const router = new Router({
           name: 'comment',
           path: '/comment',
           component: () => import('@/views/comment')
+        },
+        {
+          name: 'account',
+          path: '/account',
+          component: () => import('@/views/account')
         }
       ]
     }
