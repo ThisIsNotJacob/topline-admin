@@ -3,8 +3,8 @@
     <div slot="header" class="header">
       <span>发布文章</span>
       <div>
-        <el-button type="success" @click="handlepublish(false)">{{isEdit ? '更新' : '发布'}}</el-button>
-        <el-button type="primary" @click="handlepublish(true)">存入草稿</el-button>
+        <el-button type="success" @click="handlepublish(false)" :loading="publishLoading">{{isEdit ? '更新' : '发布'}}</el-button>
+        <el-button type="primary" @click="handlepublish(true)" :loading="publishLoading">存入草稿</el-button>
       </div>
     </div>
     <el-form v-loading="isEdit && editloading">
@@ -46,7 +46,8 @@ export default {
         channel_id: ''
       },
       editorOption: {},
-      editloading: false
+      editloading: false,
+      publishLoading: false
     }
   },
   components: {
@@ -62,6 +63,9 @@ export default {
     },
     isEdit() {
       return this.$route.name === 'publish-edit'
+    },
+    articleid() {
+      return this.$route.params.id
     }
   },
   mounted() {
@@ -69,12 +73,52 @@ export default {
   },
   methods: {
     handlepublish(draft) {
-      this.$http({
+      this.publishLoading = true
+      if (this.isEdit) {
+        this.sendEdit(draft).then(() => {
+          this.publishLoading = false
+          this.$router.push({
+            name: 'article-list'
+          })
+        })
+      } else {
+        this.sendPublish(draft).then(() => {
+          this.publishLoading = false
+          this.$router.push({
+            name: 'article-list'
+          })
+        })
+      }
+    },
+    sendEdit(draft) {
+      return this.$http({
+        method: 'PUT',
+        url: `/articles/${this.articleid}`,
+        data: this.articleForm,
+        params: {
+          draft
+        }
+      }).then(data => {
+        this.$message({
+          type: 'success',
+          message: '更新成功'
+        })
+      }).catch(err => {
+        console.log(err)
+        this.$message.error('更新失败')
+      })
+    },
+    sendPublish(draft) {
+      return this.$http({
         method: 'POST',
         url: '/articles',
         data: this.articleForm,
         params: {
           draft
+          // title: this.articleForm.title,
+          // content: this.articleForm.content,
+          // cover: this.articleForm.cover,
+          // channel_id: this.articleForm.channel_id
         }
       }).then(data => {
         this.$message({
@@ -90,7 +134,7 @@ export default {
       this.editloading = true
       this.$http({
         method: 'GET',
-        url: `/articles/${this.$route.params.id}`
+        url: `/articles/${this.articleid}`
       }).then(data => {
         this.editloading = false
         this.articleForm = data
