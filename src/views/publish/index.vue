@@ -115,10 +115,6 @@ export default {
         data: this.articleForm,
         params: {
           draft
-          // title: this.articleForm.title,
-          // content: this.articleForm.content,
-          // cover: this.articleForm.cover,
-          // channel_id: this.articleForm.channel_id
         }
       }).then(data => {
         this.$message({

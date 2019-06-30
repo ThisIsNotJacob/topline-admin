@@ -22,6 +22,10 @@
         <el-menu-item index="/article">内容列表</el-menu-item>
       </el-menu-item-group>
     </el-submenu>
+    <el-menu-item index="/comment">
+      <i class="el-icon-place"></i>
+      <span slot="title">评论管理</span>
+    </el-menu-item>
     <el-submenu index="3">
       <template slot="title">
         <i class="el-icon-menu"></i>
