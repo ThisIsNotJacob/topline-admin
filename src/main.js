@@ -7,11 +7,10 @@ import './styles/index.less'
 import 'nprogress/nprogress.css'
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import store from './store'
 Vue.prototype.$http = axios
 axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0/'
 axios.defaults.transformResponse = [function(data) {
-  // data 是未经处理的后端响应数据：JSON 格式字符串
-  // Do whatever you want to transform the data
   try {
     return JSONbig.parse(data)
   } catch (err) {
@@ -48,5 +47,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
