@@ -10,7 +10,7 @@
           {{ $store.state.user.name }}<i class="el-icon-arrow-down el-icon--right"></i>
         </span>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>账户设置</el-dropdown-item>
+          <el-dropdown-item @click.native="$router.push('/account')">账户设置</el-dropdown-item>
           <el-dropdown-item @click.native="handleLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
