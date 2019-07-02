@@ -26,18 +26,10 @@
       <i class="el-icon-place"></i>
       <span slot="title">评论管理</span>
     </el-menu-item>
-    <el-submenu index="3">
-      <template slot="title">
-        <i class="el-icon-menu"></i>
-        <span>粉丝管理</span>
-      </template>
-      <el-menu-item-group>
-        <el-menu-item index="3-1">图文数据</el-menu-item>
-        <el-menu-item index="3-2">粉丝概况</el-menu-item>
-        <el-menu-item index="3-3">粉丝画像</el-menu-item>
-        <el-menu-item index="3-4">粉丝列表</el-menu-item>
-      </el-menu-item-group>
-    </el-submenu>
+    <el-menu-item index="/image">
+      <i class="el-icon-picture"></i>
+      <span slot="title">素材管理</span>
+    </el-menu-item>
     <el-menu-item index="/account">
       <i class="el-icon-user-solid"></i>
       <span slot="title">账户信息</span>
