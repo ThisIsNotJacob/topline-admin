@@ -59,10 +59,6 @@ export default {
         url: '/user/profile'
       }).then(data => {
         this.userInfo = data
-        this.$message({
-          type: 'success',
-          message: '成功加载用户信息'
-        })
       }).catch(err => {
         console.log(err)
         this.$message.error('加载用户信息失败')
@@ -77,7 +73,8 @@ export default {
           intro: this.userInfo.intro,
           email: this.userInfo.email
         }
-      }).then(() => {
+      }).then(data => {
+        this.$store.commit('changeUser', data)
         this.$message({
           type: 'success',
           message: '成功更新用户信息'
@@ -98,6 +95,7 @@ export default {
         data: formData
       }).then(data => {
         this.userInfo.photo = data.photo
+        this.$store.commit('changeUser', this.userInfo)
         this.$message({
           type: 'success',
           message: '上传成功'

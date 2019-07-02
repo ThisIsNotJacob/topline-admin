@@ -5,11 +5,12 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    user: JSON.parse(window.localStorage.getItem('user_info'))
   },
   mutations: {
-    increment(state) {
-      state.count++
+    changeUser(state, data) {
+      Object.assign(state.user, data)
+      window.localStorage.setItem('user_info', JSON.stringify(state.user))
     }
   }
 })
