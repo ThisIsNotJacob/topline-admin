@@ -5,10 +5,18 @@
     </div>
     <div class="action">
       <el-radio-group v-model="active">
-        <el-radio-button label="全部" @click.native="handleStar(false)"></el-radio-button>
-        <el-radio-button label="收藏" @click.native="handleStar(true)"></el-radio-button>
+        <el-radio-button label="全部" @click.native="loadingImages(false)"></el-radio-button>
+        <el-radio-button label="收藏" @click.native="loadingImages(true)"></el-radio-button>
       </el-radio-group>
-      <el-button type="primary">上传图片</el-button>
+      <el-upload
+        action="http://ttapi.research.itcast.cn/mp/v1_0/user/images"
+        :headers="{ Authorization: `Bearer ${$store.state.user.token}` }"
+        name="image"
+        :show-file-list="false"
+        :on-success="handleUplaodSuccess"
+        >
+        <el-button size="small" type="primary">点击上传</el-button>
+      </el-upload>
     </div>
     <el-row :gutter="20">
       <el-col :span="4" v-for="item in images" :key="item.id">
@@ -49,10 +57,13 @@ export default {
     this.loadingImages()
   },
   methods: {
-    loadingImages() {
+    loadingImages(collect = false) {
       this.$http({
         method: 'GET',
-        url: '/user/images'
+        url: '/user/images',
+        params: {
+          collect
+        }
       }).then(data => {
         this.images = data.results
       })
@@ -91,16 +102,8 @@ export default {
         this.$message.error('删除失败')
       })
     },
-    handleStar(collect) {
-      this.$http({
-        method: 'GET',
-        url: '/user/images',
-        params: {
-          collect
-        }
-      }).then(data => {
-        this.images = data.results
-      })
+    handleUplaodSuccess() {
+      this.loadingImages(false)
     }
   }
 }
